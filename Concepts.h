@@ -19,11 +19,13 @@ namespace npj
     template <typename T> concept       Addable = requires(T a, T b) {{ a  + b } -> std::same_as<T>;};
     template <typename T> concept  Subtractable = requires(T a, T b) {{ a  - b } -> std::same_as<T>;};
     template <typename T> concept  Multipliable = requires(T a, T b) {{ a  * b } -> std::same_as<T>;};
-    template <typename T> concept     Divisible = requires(T a, T b) {{ a  / b } -> std::same_as<T>;};
+    template <typename T> concept     Dividable = requires(T a, T b) {{ a  / b } -> std::same_as<T>;};
+    template <typename T> concept       Modable = requires(T a, T b) {{ a  % b } -> std::same_as<T>;};
     template <typename T> concept AddAssignable = requires(T a, T b) {{ a += b } -> std::same_as<T&>;};
     template <typename T> concept SubAssignable = requires(T a, T b) {{ a -= b } -> std::same_as<T&>;};
     template <typename T> concept MulAssignable = requires(T a, T b) {{ a *= b } -> std::same_as<T&>;};
     template <typename T> concept DivAssignable = requires(T a, T b) {{ a /= b } -> std::same_as<T&>;};
+    template <typename T> concept ModAssignable = requires(T a, T b) {{ a %= b } -> std::same_as<T&>;};
     template <typename T> concept    Assignable = requires(T a, T b) {{ a  = b } -> std::same_as<T&>;};
     template <size_t M, size_t S> concept MinSize = M <= S;
     template <size_t M, size_t S> concept MaxSize = M >= S;

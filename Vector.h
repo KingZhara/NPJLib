@@ -14,13 +14,11 @@
 #ifndef INTREPID_PROJECTS_COMMON_VECTOR_H
 #define INTREPID_PROJECTS_COMMON_VECTOR_H
 
-#include <initializer_list>
 #include <cassert>
 #include <cmath>
 #include <ostream>
 #include "./intrepid_internals/VectorInternal.h"
 #include "Concepts.h"
-#include "Macros.h"
 
 namespace npj
 {
@@ -52,21 +50,21 @@ namespace npj
         Vector& operator/=(const Vector &other);
         Vector& operator%=(const Vector &other);
         
-        Vector  operator+ (const T      &other) const;
-        Vector  operator- (const T      &other) const;
-        Vector  operator* (const T      &other) const;
-        Vector  operator/ (const T      &other) const;
+        Vector  operator+ (const T      &scalar) const;
+        Vector  operator- (const T      &scalar) const;
+        Vector  operator* (const T      &scalar) const;
+        Vector  operator/ (const T      &scalar) const;
         Vector  operator% (const T      &other) const;
-        Vector& operator+=(const T      &other);
-        Vector& operator-=(const T      &other);
-        Vector& operator*=(const T      &other);
-        Vector& operator/=(const T      &other);
+        Vector& operator+=(const T      &scalar);
+        Vector& operator-=(const T      &scalar);
+        Vector& operator*=(const T      &scalar);
+        Vector& operator/=(const T      &scalar);
         Vector& operator%=(const T      &other);
         
         Vector& operator=(const Vector &other);
 
 
-        template <npj::VectorSemantic O>
+        template <VectorSemantic O>
         constexpr Vector<T, S, O> rename();
         
         T       dot(const Vector &other);
@@ -109,22 +107,6 @@ VEC_TMPL std::ostream& operator<<(std::ostream& o, const VEC_TYPE &v)
 
     return o;
 }
-
-VEC_TMPL T dot(const VEC_TYPE &a, const VEC_TYPE &b)
-{
-    return a.dot(b);
-}
-
-/*
-VEC_TMPL
-VEC_TYPE::Vector(std::initializer_list<T> l)
-{
-    assert(l.size() == S);
-    int i = 0;
-    for (auto& v : l)
-        (*this).as_arr()[i++] = v;
-}
-*/
 
 VEC_TMPL
 constexpr VEC_TYPE::Vector(const T arr[], int N)
@@ -181,20 +163,24 @@ constexpr const T& VEC_TYPE::operator[](const size_t index) const
 VEC_VEC_OP(+, Addable)
 VEC_VEC_OP(-, Subtractable)
 VEC_VEC_OP(*, Multipliable)
-VEC_VEC_OP(/, Divisible)
+VEC_VEC_OP(/, Dividable)
+VEC_VEC_OP(%, Modable)
 VEC_VEC_ASN_OP(+=, AddAssignable)
 VEC_VEC_ASN_OP(-=, SubAssignable)
 VEC_VEC_ASN_OP(*=, MulAssignable)
 VEC_VEC_ASN_OP(/=, DivAssignable)
+VEC_VEC_ASN_OP(%=, ModAssignable)
 
 VEC_SCA_OP(+, Addable)
 VEC_SCA_OP(-, Subtractable)
 VEC_SCA_OP(*, Multipliable)
-VEC_SCA_OP(/, Divisible)
+VEC_SCA_OP(/, Dividable)
+VEC_SCA_OP(%, Modable)
 VEC_SCA_ASN_OP(+=, AddAssignable)
 VEC_SCA_ASN_OP(-=, SubAssignable)
 VEC_SCA_ASN_OP(*=, MulAssignable)
 VEC_SCA_ASN_OP(/=, DivAssignable)
+VEC_SCA_ASN_OP(%=, ModAssignable)
 
 VEC_TMPL VEC_TYPE& VEC_TYPE::operator=(const VEC_TYPE &other)
 {
@@ -205,14 +191,12 @@ VEC_TMPL VEC_TYPE& VEC_TYPE::operator=(const VEC_TYPE &other)
 }
 VEC_TMPL
 T VEC_TYPE::dist(const VEC_TYPE &other)
-{
-    return (*this - other).length();
-}
+{ return (*this - other).length(); }
+
 VEC_TMPL
 T VEC_TYPE::sqdist(const VEC_TYPE &other)
-{
-    return (*this - other).sqlen();
-}
+{ return (*this - other).sqlen(); }
+
 VEC_TMPL
 T VEC_TYPE::dot(const VEC_TYPE &other)
 {
@@ -221,26 +205,31 @@ T VEC_TYPE::dot(const VEC_TYPE &other)
         ret += (*this)[i] * other[i];
     return ret;
 }
-VEC_TMPL
-T magnitude(const VEC_TYPE &v) {return v.length();}
+
+
+VEC_TMPL T npj::dot(const VEC_TYPE &a, const VEC_TYPE &b)
+{ return a.dot(b); }
 
 VEC_TMPL
-T length(const VEC_TYPE &v) {return v.length();}
+T npj::magnitude(const VEC_TYPE &v) {return v.length();}
 
 VEC_TMPL
-T norm(const VEC_TYPE &v) {return v.length();}
+T npj::length(const VEC_TYPE &v) {return v.length();}
 
 VEC_TMPL
-T squaredLength(const VEC_TYPE &v) {return v.dot(v);}
+T npj::norm(const VEC_TYPE &v) {return v.length();}
 
 VEC_TMPL
-T lengthSquared(const VEC_TYPE &v) {return v.dot(v);}
+T npj::squaredLength(const VEC_TYPE &v) {return v.dot(v);}
 
 VEC_TMPL
-T sqlen(const VEC_TYPE &v) {return v.dot(v);}
+T npj::lengthSquared(const VEC_TYPE &v) {return v.dot(v);}
 
 VEC_TMPL
-VEC_TYPE& normalize(const VEC_TYPE &v, const T& len) {return v.normalize(len);}
+T npj::sqlen(const VEC_TYPE &v) {return v.dot(v);}
+
+VEC_TMPL
+VEC_TYPE& npj::normalize(const VEC_TYPE &v, const T& len) {return v.normalize(len);}
 
 VEC_TMPL 
 T VEC_TYPE::magnitude() {return length();}
@@ -281,17 +270,17 @@ VEC_TYPE VEC_TYPE::zero()
 }
 
 VEC_TMPL
-VEC_TYPE relative(const VEC_TYPE &a, const VEC_TYPE &b) { return a - b;}
+VEC_TYPE npj::relative(const VEC_TYPE &a, const VEC_TYPE &b) { return a - b;}
     
 VEC_TMPL
-VEC_TYPE radial(const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized)
+VEC_TYPE npj::radial(const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized)
 {
     VEC_TYPE normalized = (dirNormalized ? dir : dir.normalize());
     return vec.dot(dir) * dir;
 }
     
 VEC_TMPL
-VEC_TYPE lateral(const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized)
+VEC_TYPE npj::lateral(const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized)
 {
     VEC_TYPE radial = npj::radial(vec, dir, dirNormalized);
     return vec - radial;

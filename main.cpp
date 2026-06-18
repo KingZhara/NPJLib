@@ -3,7 +3,7 @@
 
 int main()
 {
-    constexpr npj::Vector<int, 1, npj::VectorSemantic::HSVA> a{1};
+    constexpr npj::Vector<int, 4, npj::VectorSemantic::HSVA> a{1,2,3,4};
 
     std::cout << a.h << ", " << a.a << "\n";
 

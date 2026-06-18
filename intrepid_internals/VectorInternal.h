@@ -10,13 +10,8 @@
 #ifndef INTREPID_PROJECTS_INTERNAL_VECTOR_H
 #define INTREPID_PROJECTS_INTERNAL_VECTOR_H
 
-#include <initializer_list>
-#include <cassert>
-#include <cmath>
 #include <ostream>
 #include <type_traits>
-#include "../Concepts.h"
-#include "../Macros.h"
 #include "../BaseInjection.h"
 
 #define VEC_TMPL template <typename T, size_t S, npj::VectorSemantic _NPJSem_>
@@ -25,22 +20,8 @@
 #define VEC_TYPE npj::Vector<T,S,_NPJSem_>
 #define OVEC_T npj::Vector<T,Os,O_NPJSem_>
 #define NVEC_T npj::Vector<Ot,Os,O_NPJSem_>
-namespace npj
-{
-    enum class VectorSemantic
-    {
-        V_XYZW,
-        XYZW,
-        RGBA,
-        HSVA,
-        HSLA,
-        UV,
-        RAW
-    };
-}
-// #define B_INJ_SYM(key, member) _
-namespace npj_internal
-{   
+
+
 #define NPJ_BINJ_BEGIN(KEY, INDEX, BASE, MEMBER, TMPL_NAMES, ...)       \
     NPJ_BINJ_STRUCT_OPEN(NPJ_MAKE_BINJ_NAME(KEY, INDEX), BASE, __VA_ARGS__) \
     T MEMBER;                                                           \
@@ -104,6 +85,23 @@ namespace npj_internal
     using NPJ_MAKE_BINJ_NAME_CHOICE_END(KEY) = NPJ_MAKE_BINJ_NAME_CHOICE(KEY, PREV_INDEX)\
         <TMPL_NAMES, _NPJSem_, std::conditional_t<_NPJSem_ == npj::SMTC::COND, NPJ_MAKE_BINJ_NAME_END_COND(COND)<TMPL_NAMES>, void>>;
 
+
+namespace npj
+{
+    enum class VectorSemantic
+    {
+        V_XYZW,
+        XYZW,
+        RGBA,
+        HSVA,
+        HSLA,
+        UV,
+        RAW
+    };
+}
+// #define B_INJ_SYM(key, member) _
+namespace npj_internal
+{
 struct empty_base {};
 
 NPJ_BINJ_RAW(RAW, T COMMA S, typename T, size_t S)

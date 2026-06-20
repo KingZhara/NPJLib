@@ -134,6 +134,16 @@ NPJ_BINJ_INTER(HSVA, 1, 0, s, T COMMA S, typename T, size_t S)
 NPJ_BINJ_INTER(HSVA, 2, 1, v, T COMMA S, typename T, size_t S)
 NPJ_BINJ_INTER(HSVA, 3, 2, a, T COMMA S, typename T, size_t S)
 NPJ_BINJ_END  (HSVA, 4, 3   , T COMMA S, typename T, size_t S)
+
+NPJ_BINJ_BEGIN(HSLA, 0,  , h, T COMMA S, typename T, size_t S)
+NPJ_BINJ_INTER(HSLA, 1, 0, s, T COMMA S, typename T, size_t S)
+NPJ_BINJ_INTER(HSLA, 2, 1, l, T COMMA S, typename T, size_t S)
+NPJ_BINJ_INTER(HSLA, 3, 2, a, T COMMA S, typename T, size_t S)
+NPJ_BINJ_END  (HSLA, 4, 3   , T COMMA S, typename T, size_t S)
+
+NPJ_BINJ_BEGIN(UV, 0,  , u, T COMMA S, typename T, size_t S)
+NPJ_BINJ_INTER(UV, 1, 0, v, T COMMA S, typename T, size_t S)
+NPJ_BINJ_END  (UV, 2, 1   , T COMMA S, typename T, size_t S)
 //*/
 //*
 NPJ_INIT_CHOICE(VEC, VectorSemantic, typename T, size_t S)
@@ -141,7 +151,9 @@ NPJ_DEF_CHOICE(VEC, 1, 0, RAW   , VectorSemantic, T COMMA S, typename T, size_t 
 NPJ_DEF_CHOICE(VEC, 2, 1, XYZW  , VectorSemantic, T COMMA S, typename T, size_t S)
 NPJ_DEF_CHOICE(VEC, 3, 2, V_XYZW, VectorSemantic, T COMMA S, typename T, size_t S)
 NPJ_DEF_CHOICE(VEC, 4, 3, HSVA  , VectorSemantic, T COMMA S, typename T, size_t S)
-NPJ_END_CHOICE(VEC,    4, RGBA  , VectorSemantic, T COMMA S, typename T, size_t S)
+NPJ_DEF_CHOICE(VEC, 5, 4, HSLA  , VectorSemantic, T COMMA S, typename T, size_t S)
+NPJ_DEF_CHOICE(VEC, 6, 5, UV    , VectorSemantic, T COMMA S, typename T, size_t S)
+NPJ_END_CHOICE(VEC,    6, RGBA  , VectorSemantic, T COMMA S, typename T, size_t S)
 
 }
 

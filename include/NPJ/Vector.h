@@ -77,6 +77,7 @@ namespace npj
         T       lengthSquared();
         T       sqlen();
         Vector& normalize(const T& len = -1);
+        Vector  cross(const Vector& other) requires (S == 3);
         
         static Vector  zero();
     };
@@ -258,7 +259,17 @@ VEC_TYPE& VEC_TYPE::normalize(const T& len)
         return *this = *this / length() * len;
 }
 
-VEC_TMPL 
+VEC_TMPL
+VEC_TYPE VEC_TYPE::cross(const Vector &other) requires (S == 3)
+{
+    return {
+        *this[1] * other[2] - *this[2] * other[1],
+        *this[2] * other[0] - *this[0] * other[2],
+        *this[0] * other[1] - *this[1] * other[0]
+    };
+}
+
+VEC_TMPL
 VEC_TYPE VEC_TYPE::zero()
 {
     VEC_TYPE ret;

@@ -1,3 +1,16 @@
+// File: BaseInjection.h
+///       INTREPID
+///       ________
+///          ||
+///          ||
+///         /__\
+///       ,;____;,
+/// ',  ,;'      ';,  ,'
+///   ';'          ';'
+///     ',        ,'
+///
+///       PROJECTS
+
 #ifndef NPJ_BASE_INJECTION_H
 #define NPJ_BASE_INJECTION_H
 

@@ -9,7 +9,7 @@
 ///   ';'          ';'  
 ///     ',        ,'    
 ///                     
-///      PROJECTS       
+///       PROJECTS
 
 #ifndef INTREPID_PROJECTS_COMMON_VECTOR_H
 #define INTREPID_PROJECTS_COMMON_VECTOR_H
@@ -54,12 +54,12 @@ namespace npj
         Vector  operator- (const T      &scalar) const;
         Vector  operator* (const T      &scalar) const;
         Vector  operator/ (const T      &scalar) const;
-        Vector  operator% (const T      &other) const;
+        Vector  operator% (const T      &scalar) const;
         Vector& operator+=(const T      &scalar);
         Vector& operator-=(const T      &scalar);
         Vector& operator*=(const T      &scalar);
         Vector& operator/=(const T      &scalar);
-        Vector& operator%=(const T      &other);
+        Vector& operator%=(const T      &scalar);
         
         Vector& operator=(const Vector &other);
 
@@ -89,10 +89,10 @@ namespace npj
     VEC_TMPL T squaredLength(const VEC_TYPE &v);
     VEC_TMPL T lengthSquared(const VEC_TYPE &v);
     VEC_TMPL T sqlen(const VEC_TYPE &v);
-    VEC_TMPL VEC_TYPE& normalize(const VEC_TYPE &v, const T& len = -1);
-    VEC_TMPL VEC_TYPE relative(const VEC_TYPE &a, const VEC_TYPE &b);
-    VEC_TMPL VEC_TYPE radial(const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized = false);
-    VEC_TMPL VEC_TYPE lateral(const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized = false);
+    VEC_TMPL VEC_TYPE& normalize(const VEC_TYPE &v  , const T& len = -1);
+    VEC_TMPL VEC_TYPE  relative (const VEC_TYPE &a  , const VEC_TYPE &b);
+    VEC_TMPL VEC_TYPE  radial   (const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized = false);
+    VEC_TMPL VEC_TYPE  lateral  (const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized = false);
     
 }
 

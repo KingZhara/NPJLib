@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Vector.h"
+#include "include/NPJ/Vector.h"
 
 int main()
 {

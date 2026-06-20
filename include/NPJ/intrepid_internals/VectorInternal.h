@@ -1,12 +1,16 @@
-// File: Vector.h
-///     _______    
-///        |       
-///        |       
-///       /_\      
-/// ,   ,'   ',   ,
-///  ','       ',' 
-///    ',     ,'
-        
+// File: VectorInternal.h
+///       INTREPID
+///       ________
+///          ||
+///          ||
+///         /__\
+///       ,;____;,
+/// ',  ,;'      ';,  ,'
+///   ';'          ';'
+///     ',        ,'
+///
+///       PROJECTS
+
 #ifndef INTREPID_PROJECTS_INTERNAL_VECTOR_H
 #define INTREPID_PROJECTS_INTERNAL_VECTOR_H
 

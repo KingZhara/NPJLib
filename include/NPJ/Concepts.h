@@ -1,16 +1,18 @@
 // File: Concepts.h
-///     _______    
-///        |       
-///        |       
-///       /_\      
-/// ,   ,'   ',   ,
-///  ','       ',' 
-///    ',     ,'
-        
+///       INTREPID
+///       ________
+///          ||
+///          ||
+///         /__\
+///       ,;____;,
+/// ',  ,;'      ';,  ,'
+///   ';'          ';'
+///     ',        ,'
+///
+///       PROJECTS
+
 #ifndef INTREPID_PROJECTS_COMMON_CONCEPTS_H
 #define INTREPID_PROJECTS_COMMON_CONCEPTS_H
-
-#include <cstdint>
 
 namespace npj
 {
@@ -31,38 +33,9 @@ namespace npj
     template <size_t M, size_t S> concept MaxSize = M >= S;
     template <size_t M, size_t S> concept  IsSize = M == S;
 
-    // template <typename R, typename T, std::function<R(T)> Func>
 
     // @todo add error message if not derived from
     template <typename Base, typename T> concept DerivedFrom = std::derived_from<Base, T>;
-
-    struct FlagSet
-    {
-        using T = uint64_t;
-        
-        enum Flag : T
-        {
-            TRIVIAL = 0b0,
-            CONSTEXPR = 0b1
-        };
-        
-        T v = 0;
-
-        constexpr bool is_trivial()      const {return v == TRIVIAL;}
-        constexpr bool check_constexpr() const {return v & CONSTEXPR;}
-
-        FlagSet() = default;
-        constexpr FlagSet(const Flag& f) : v(f) {}
-    };
-
-    template <FlagSet F> concept Constexpr =  F.check_constexpr();
-
-    
-    template <FlagSet F> concept NotCxpr   = !F.check_constexpr();
-    template <FlagSet F> concept Trivial   =  F.is_trivial();
-
-
-    //template <>
 }
 
 #endif

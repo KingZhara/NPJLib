@@ -148,8 +148,8 @@ constexpr T& VEC_TYPE::operator[](const size_t index)
 {
     if consteval
     { return this->base_t::get(index); }
-    else
-    { return *(&(this->head()) + index); }
+
+    return *(&this->head() + index);
 }
 
 VEC_TMPL
@@ -157,8 +157,8 @@ constexpr const T& VEC_TYPE::operator[](const size_t index) const
 {
     if consteval
     { return this->base_t::get(index); }
-    else
-    { return *(&(this->head()) + index); }
+
+    return *(&this->head() + index);
 }
 
 VEC_VEC_OP(+, Addable)
@@ -263,9 +263,9 @@ VEC_TMPL
 VEC_TYPE VEC_TYPE::cross(const Vector &other) requires (S == 3)
 {
     return {
-        *this[1] * other[2] - *this[2] * other[1],
-        *this[2] * other[0] - *this[0] * other[2],
-        *this[0] * other[1] - *this[1] * other[0]
+        (*this)[1] * other[2] - (*this)[2] * other[1],
+        (*this)[2] * other[0] - (*this)[0] * other[2],
+        (*this)[0] * other[1] - (*this)[1] * other[0]
     };
 }
 

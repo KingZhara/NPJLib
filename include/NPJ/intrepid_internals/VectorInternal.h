@@ -30,8 +30,8 @@
     NPJ_BINJ_STRUCT_OPEN(NPJ_MAKE_BINJ_NAME(KEY, INDEX), BASE, __VA_ARGS__) \
     T MEMBER;                                                           \
     constexpr NPJ_MAKE_BINJ_NAME(KEY, INDEX)() = default;               \
-    constexpr T& get(size_t i) {return MEMBER;}                         \
-    constexpr T get(size_t i) const {return MEMBER;}                    \
+    constexpr       T& get(size_t i) {return MEMBER;}                         \
+    constexpr const T& get(size_t i) const {return MEMBER;}                    \
     constexpr T& head() {return MEMBER;}                                \
     constexpr const T& head() const {return MEMBER;}                    \
     T* array() {return reinterpret_cast<T*>(this);}                     \
@@ -44,8 +44,8 @@
     NPJ_BINJ_STRUCT_OPEN(NPJ_MAKE_BINJ_NAME(KEY, INDEX), NPJ_BINJ_DEF_BASE(NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX), <TMPL_NAMES>), __VA_ARGS__) \
     T MEMBER;                                                           \
     constexpr NPJ_MAKE_BINJ_NAME(KEY, INDEX)() = default;\
-    constexpr T& get(size_t i)       {return i == INDEX ? MEMBER : this->NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX)<T,S>::get(i);}\
-    constexpr T  get(size_t i) const {return i == INDEX ? MEMBER : this->NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX)<T,S>::get(i);}\
+    constexpr       T& get(size_t i)       {return i == INDEX ? MEMBER : this->NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX)<T,S>::get(i);}\
+    constexpr const T&  get(size_t i) const {return i == INDEX ? MEMBER : this->NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX)<T,S>::get(i);}\
     NPJ_BINJ_STRUCT_CLOSE                                               \
     NPJ_MAKE_TEMPLATE(__VA_ARGS__, typename Next)                       \
         using NPJ_MAKE_BINJ_NAME_COND(KEY, INDEX) = NPJ_MAKE_BINJ_NAME_COND(KEY, PREV_INDEX)<TMPL_NAMES, std::conditional_t \
@@ -55,8 +55,8 @@
     NPJ_BINJ_STRUCT_OPEN(NPJ_MAKE_BINJ_NAME(KEY, INDEX), NPJ_BINJ_DEF_BASE(NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX), <TMPL_NAMES>), __VA_ARGS__) \
     T xs[S - INDEX];\
     constexpr NPJ_MAKE_BINJ_NAME(KEY, INDEX)() = default;               \
-    constexpr T& get(size_t i)      {return i < INDEX ? this->NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX)<T,S>::get(i) : xs[i - INDEX];}    \
-    constexpr T get(size_t i) const {return i < INDEX ? this->NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX)<T,S>::get(i) : xs[i - INDEX];}    \
+    constexpr       T& get(size_t i)      {return i < INDEX ? this->NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX)<T,S>::get(i) : xs[i - INDEX];}    \
+    constexpr const T& get(size_t i) const {return i < INDEX ? this->NPJ_MAKE_BINJ_NAME(KEY, PREV_INDEX)<T,S>::get(i) : xs[i - INDEX];}    \
     NPJ_BINJ_STRUCT_CLOSE                                               \
     NPJ_MAKE_TEMPLATE(__VA_ARGS__)                                      \
         using NPJ_MAKE_BINJ_NAME_END_COND(KEY) = NPJ_MAKE_BINJ_NAME_COND(KEY, PREV_INDEX)<TMPL_NAMES, std::conditional_t \
@@ -67,8 +67,8 @@
     NPJ_BINJ_STRUCT_OPEN(NPJ_MAKE_BINJ_NAME(KEY, 0), , __VA_ARGS__)      \
     T xs[S];                                                            \
     constexpr NPJ_MAKE_BINJ_NAME(KEY, 0)() = default;                   \
-    constexpr T& get(size_t i) {return xs[i];}                          \
-    constexpr T get(size_t i) const {return xs[i];}                     \
+    constexpr       T& get(size_t i) {return xs[i];}                          \
+    constexpr const T& get(size_t i) const {return xs[i];}                     \
     constexpr T& head() {return xs[0];}                                 \
     constexpr const T& head() const {return xs[0];}                     \
     T* array() {return reinterpret_cast<T*>(this);}                     \

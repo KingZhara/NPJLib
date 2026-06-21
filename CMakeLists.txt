@@ -10,7 +10,7 @@ target_include_directories(npjlib INTERFACE
 )
 
 target_compile_features(npjlib INTERFACE cxx_std_23)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 26)
 
 include_directories(.)
 include_directories(include/NPJ/intrepid_internals)

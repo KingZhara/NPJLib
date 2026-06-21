@@ -77,7 +77,8 @@ namespace npj
         T       lengthSquared();
         T       sqlen();
         Vector& normalize(const T& len = -1);
-        Vector  cross(const Vector& other) requires (S == 3);
+        Vector  lerp(const Vector& other, T ratio) const;
+        Vector  cross(const Vector& other) const requires (S == 3);
         
         static Vector  zero();
     };
@@ -94,6 +95,8 @@ namespace npj
     VEC_TMPL VEC_TYPE  relative (const VEC_TYPE &a  , const VEC_TYPE &b);
     VEC_TMPL VEC_TYPE  radial   (const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized = false);
     VEC_TMPL VEC_TYPE  lateral  (const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized = false);
+    VEC_TMPL VEC_TYPE  lerp     (const VEC_TYPE &a, const VEC_TYPE &b, T ratio);
+    VEC_TMPL VEC_TYPE  cross    (const VEC_TYPE &a, const VEC_TYPE &v) requires (S == 3);
     
 }
 
@@ -260,12 +263,22 @@ VEC_TYPE& VEC_TYPE::normalize(const T& len)
 }
 
 VEC_TMPL
-VEC_TYPE VEC_TYPE::cross(const Vector &other) requires (S == 3)
+VEC_TYPE VEC_TYPE::cross(const Vector &other) const requires (S == 3)
 {
     return {
         (*this)[1] * other[2] - (*this)[2] * other[1],
         (*this)[2] * other[0] - (*this)[0] * other[2],
         (*this)[0] * other[1] - (*this)[1] * other[0]
+    };
+}
+
+VEC_TMPL
+VEC_TYPE VEC_TYPE::lerp(const Vector &other, T ratio) const
+{
+    return {
+        (*this)[0] * (1 - ratio) + other[0] * ratio,
+        (*this)[1] * (1 - ratio) + other[1] * ratio,
+        (*this)[2] * (1 - ratio) + other[2] * ratio
     };
 }
 
@@ -295,6 +308,18 @@ VEC_TYPE npj::lateral(const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNo
 {
     VEC_TYPE radial = npj::radial(vec, dir, dirNormalized);
     return vec - radial;
+}
+
+VEC_TMPL
+VEC_TYPE npj::cross(const VEC_TYPE &a, const VEC_TYPE &b) requires (S == 3)
+{
+    return a.cross(b);
+}
+
+VEC_TMPL
+VEC_TYPE npj::lerp(const VEC_TYPE &a, const VEC_TYPE &b, T ratio)
+{
+    return a.lerp(b, ratio);
 }
 
 

@@ -16,6 +16,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <functional>
 #include <ostream>
 #include "./intrepid_internals/VectorInternal.h"
 #include "Concepts.h"
@@ -66,19 +67,20 @@ namespace npj
 
         template <VectorSemantic O>
         constexpr Vector<T, S, O> rename();
-        
-        T       dot(const Vector &other);
-        T       dist(const Vector &other);
-        T       sqdist(const Vector &other);
-        T       magnitude();
-        T       length();
-        T       norm();
-        T       squaredLength();
-        T       lengthSquared();
-        T       sqlen();
-        Vector& normalize(const T& len = -1);
-        Vector  lerp(const Vector& other, T ratio) const;
-        Vector  cross(const Vector& other) const requires (S == 3);
+        constexpr T       dot(const Vector &other) const;
+        constexpr T       dist(const Vector &other) const;
+        constexpr T       sqdist(const Vector &other) const;
+        constexpr T       magnitude() const;
+        constexpr T       length() const;
+        constexpr T       norm() const;
+        constexpr T       squaredLength() const;
+        constexpr T       lengthSquared() const;
+        constexpr T       sqlen() const;
+        constexpr T       min() const;
+        constexpr T       max() const;
+        constexpr Vector& normalize(const T& len = -1) const;
+        constexpr Vector  lerp(const Vector& other, T ratio) const;
+        constexpr Vector  cross(const Vector& other) const requires (S == 3);
         
         static Vector  zero();
     };
@@ -91,13 +93,22 @@ namespace npj
     VEC_TMPL T squaredLength(const VEC_TYPE &v);
     VEC_TMPL T lengthSquared(const VEC_TYPE &v);
     VEC_TMPL T sqlen(const VEC_TYPE &v);
+    VEC_TMPL T min(const VEC_TYPE &v);
+    VEC_TMPL T max(const VEC_TYPE &v);
     VEC_TMPL VEC_TYPE& normalize(const VEC_TYPE &v  , const T& len = -1);
     VEC_TMPL VEC_TYPE  relative (const VEC_TYPE &a  , const VEC_TYPE &b);
     VEC_TMPL VEC_TYPE  radial   (const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized = false);
     VEC_TMPL VEC_TYPE  lateral  (const VEC_TYPE &vec, const VEC_TYPE &dir, const bool dirNormalized = false);
     VEC_TMPL VEC_TYPE  lerp     (const VEC_TYPE &a, const VEC_TYPE &b, T ratio);
     VEC_TMPL VEC_TYPE  cross    (const VEC_TYPE &a, const VEC_TYPE &v) requires (S == 3);
-    
+
+    VEC_TMPL VEC_TYPE                     min(std::initializer_list<VEC_TYPE>);
+    VEC_TMPL_OPEN, typename CMP> VEC_TYPE min(std::initializer_list<VEC_TYPE>, CMP cmp = {});
+    VEC_TMPL VEC_TYPE                     min(std::initializer_list<VEC_TYPE>, std::function<bool(VEC_TYPE, VEC_TYPE)> cmp);
+
+    VEC_TMPL VEC_TYPE                     max(std::initializer_list<VEC_TYPE>);
+    VEC_TMPL_OPEN, typename CMP> VEC_TYPE max(std::initializer_list<VEC_TYPE>, CMP cmp = {});
+    VEC_TMPL VEC_TYPE                     max(std::initializer_list<VEC_TYPE>, std::function<bool(VEC_TYPE, VEC_TYPE)> cmp);
 }
 
 VEC_TMPL std::ostream& operator<<(std::ostream& o, const VEC_TYPE &v)
@@ -194,16 +205,13 @@ VEC_TMPL VEC_TYPE& VEC_TYPE::operator=(const VEC_TYPE &other)
     return *this;
 }
 VEC_TMPL
-T VEC_TYPE::dist(const VEC_TYPE &other)
-{ return (*this - other).length(); }
+constexpr T VEC_TYPE::dist(const VEC_TYPE &other) const { return (*this - other).length(); }
 
 VEC_TMPL
-T VEC_TYPE::sqdist(const VEC_TYPE &other)
-{ return (*this - other).sqlen(); }
+constexpr T VEC_TYPE::sqdist(const VEC_TYPE &other) const { return (*this - other).sqlen(); }
 
 VEC_TMPL
-T VEC_TYPE::dot(const VEC_TYPE &other)
-{
+constexpr T VEC_TYPE::dot(const VEC_TYPE &other) const {
     T ret;
     for (size_t i = 0; i < S; ++i)
         ret += (*this)[i] * other[i];
@@ -233,36 +241,64 @@ VEC_TMPL
 T npj::sqlen(const VEC_TYPE &v) {return v.dot(v);}
 
 VEC_TMPL
+T npj::min(const VEC_TYPE &v) {return v.min();}
+
+VEC_TMPL
+T npj::max(const VEC_TYPE &v) {return v.max();}
+
+VEC_TMPL
 VEC_TYPE& npj::normalize(const VEC_TYPE &v, const T& len) {return v.normalize(len);}
 
-VEC_TMPL 
-T VEC_TYPE::magnitude() {return length();}
+VEC_TMPL
+constexpr T VEC_TYPE::magnitude() const {return length();}
 
-VEC_TMPL 
-T VEC_TYPE::norm() {return length();}
+VEC_TMPL
+constexpr T VEC_TYPE::norm() const {return length();}
 
-VEC_TMPL 
-T VEC_TYPE::length() { return sqrt(this->dot(*this)); }
+VEC_TMPL
+constexpr T VEC_TYPE::length() const { return sqrt(this->dot(*this)); }
 
-VEC_TMPL  
-T VEC_TYPE::squaredLength() {return sqlen();}
+VEC_TMPL
+constexpr T VEC_TYPE::squaredLength() const {return sqlen();}
 
-VEC_TMPL  
-T VEC_TYPE::lengthSquared() {return sqlen();}
+VEC_TMPL
+constexpr T VEC_TYPE::lengthSquared() const {return sqlen();}
 
-VEC_TMPL  
-T VEC_TYPE::sqlen() {return this->dot(*this);}
+VEC_TMPL
+constexpr T VEC_TYPE::sqlen() const {return this->dot(*this);}
 
-VEC_TMPL 
-VEC_TYPE& VEC_TYPE::normalize(const T& len)
-{
+VEC_TMPL
+constexpr T VEC_TYPE::min() const {
+    T r = (*this)[0];
+
+    for (int i = 1; i < S; ++i)
+        if (r > (*this)[i])
+            r = this[i][0];
+
+    return r;
+}
+
+VEC_TMPL
+constexpr T VEC_TYPE::max() const {
+    T r = (*this)[0];
+
+    for (int i = 1; i < S; ++i)
+        if (r < (*this)[i])
+            r = this[i][0];
+
+    return r;
+}
+
+
+VEC_TMPL constexpr
+VEC_TYPE & VEC_TYPE::normalize(const T& len) const {
     if (len < 0)
         return *this /= length();
     else
         return *this = *this / length() * len;
 }
 
-VEC_TMPL
+VEC_TMPL constexpr
 VEC_TYPE VEC_TYPE::cross(const Vector &other) const requires (S == 3)
 {
     return {
@@ -272,14 +308,14 @@ VEC_TYPE VEC_TYPE::cross(const Vector &other) const requires (S == 3)
     };
 }
 
-VEC_TMPL
+VEC_TMPL constexpr
 VEC_TYPE VEC_TYPE::lerp(const Vector &other, T ratio) const
 {
-    return {
-        (*this)[0] * (1 - ratio) + other[0] * ratio,
-        (*this)[1] * (1 - ratio) + other[1] * ratio,
-        (*this)[2] * (1 - ratio) + other[2] * ratio
-    };
+    Vector ret;
+    for (size_t i = 0; i < S; ++i)
+        ret[i] = (*this)[i] * (1 - ratio) + other[i] * ratio;
+
+    return ret;
 }
 
 VEC_TMPL
@@ -315,6 +351,146 @@ VEC_TYPE npj::cross(const VEC_TYPE &a, const VEC_TYPE &b) requires (S == 3)
 {
     return a.cross(b);
 }
+
+VEC_TMPL_OPEN>
+VEC_TYPE npj::min(std::initializer_list<VEC_TYPE> vecs)
+{
+    bool init = true;
+    T rlen;
+    VEC_TYPE ret;
+
+    for (auto& v : vecs)
+    {
+        if (init)
+        {
+            init = false;
+            ret = v;
+            rlen = v.sqlen();
+            continue;
+        }
+        T len = v.sqlen();
+        if (len < rlen)
+        {
+            rlen = len;
+            ret = v;
+        }
+    }
+
+    return ret;
+}
+
+VEC_TMPL_OPEN, typename CMP>
+VEC_TYPE npj::min(std::initializer_list<VEC_TYPE> vecs, CMP cmp)
+{
+    bool init = true;
+    VEC_TYPE ret;
+
+    for (auto& v : vecs)
+    {
+        if (init)
+        {
+            init = false;
+            ret = v;
+            continue;
+        }
+        if (cmp(v, ret))
+            ret = v;
+    }
+
+    return ret;
+}
+
+VEC_TMPL_OPEN>
+VEC_TYPE npj::min(std::initializer_list<VEC_TYPE> vecs, std::function<bool(VEC_TYPE, VEC_TYPE)> cmp)
+{
+    bool init = true;
+    VEC_TYPE ret;
+
+    for (auto& v : vecs)
+    {
+        if (init)
+        {
+            init = false;
+            ret = v;
+            continue;
+        }
+        if (cmp(v, ret))
+            ret = v;
+    }
+
+    return ret;
+}
+
+
+VEC_TMPL_OPEN>
+VEC_TYPE npj::max(std::initializer_list<VEC_TYPE> vecs)
+{
+    bool init = true;
+    T rlen;
+    VEC_TYPE ret;
+
+    for (auto& v : vecs)
+    {
+        if (init)
+        {
+            init = false;
+            ret = v;
+            rlen = v.sqlen();
+            continue;
+        }
+        T len = v.sqlen();
+        if (len > rlen)
+        {
+            rlen = len;
+            ret = v;
+        }
+    }
+
+    return ret;
+}
+
+VEC_TMPL_OPEN, typename CMP>
+VEC_TYPE npj::max(std::initializer_list<VEC_TYPE> vecs, CMP cmp)
+{
+    bool init = true;
+    VEC_TYPE ret;
+
+    for (auto& v : vecs)
+    {
+        if (init)
+        {
+            init = false;
+            ret = v;
+            continue;
+        }
+        if (cmp(v, ret))
+            ret = v;
+    }
+
+    return ret;
+}
+
+VEC_TMPL_OPEN>
+VEC_TYPE npj::max(std::initializer_list<VEC_TYPE> vecs, std::function<bool(VEC_TYPE, VEC_TYPE)> cmp)
+{
+    bool init = true;
+    VEC_TYPE ret;
+
+    for (auto& v : vecs)
+    {
+        if (init)
+        {
+            init = false;
+            ret = v;
+            continue;
+        }
+        if (cmp(v, ret))
+            ret = v;
+    }
+
+    return ret;
+}
+
 
 VEC_TMPL
 VEC_TYPE npj::lerp(const VEC_TYPE &a, const VEC_TYPE &b, T ratio)

@@ -78,7 +78,8 @@ namespace npj
         constexpr T       sqlen() const;
         constexpr T       min() const;
         constexpr T       max() const;
-        constexpr Vector& normalize(const T& len = -1) const;
+        constexpr Vector& normalize(const T& len = -1);
+        constexpr Vector normalize(const T& len = -1) const;
         constexpr Vector  lerp(const Vector& other, T ratio) const;
         constexpr Vector  cross(const Vector& other) const requires (S == 3);
         
@@ -291,11 +292,19 @@ constexpr T VEC_TYPE::max() const {
 
 
 VEC_TMPL constexpr
-VEC_TYPE & VEC_TYPE::normalize(const T& len) const {
+VEC_TYPE VEC_TYPE::normalize(const T& len) const {
+    if (len < 0)
+        return *this / length();
+
+    return *this / length() * len;
+}
+
+VEC_TMPL constexpr
+VEC_TYPE & VEC_TYPE::normalize(const T& len) {
     if (len < 0)
         return *this /= length();
-    else
-        return *this = *this / length() * len;
+
+    return *this = *this / length() * len;
 }
 
 VEC_TMPL constexpr

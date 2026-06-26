@@ -17,6 +17,7 @@
 #include <cassert>
 #include <cmath>
 #include <functional>
+#include <array>
 #include <ostream>
 #include "./intrepid_internals/VectorInternal.h"
 #include "Concepts.h"
